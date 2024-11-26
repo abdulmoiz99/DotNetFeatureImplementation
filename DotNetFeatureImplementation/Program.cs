@@ -1,40 +1,25 @@
 ﻿using DotNetFeatureImplementation;
 using System.Runtime.CompilerServices;
 
+var example = new UnsafeAccessorExample();
 
-CallStaticPrivateMethod();
-CallPrivateConstructor();
-GetSetStaticPrivateField();
+example.AccessGenericType(new UpdatedClassForPrivateGeneric<int>());
 
-static void CallStaticPrivateMethod()
+class Accessors<V>
 {
-    StaticPrivateMethod(null);
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_field")]
+    public extern static ref V GetSetPrivateField(UpdatedClassForPrivateGeneric<V> c);
 
-    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = nameof(StaticPrivateMethod))]
-    extern static void StaticPrivateMethod(Class c);
-}
-static void CallPrivateConstructor()
-{
-    Class c1 = PrivateConstructor(1);
-    CallPrivateMethod(c1);
-
-
-    [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
-    extern static Class PrivateConstructor(int i);
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "M")]
+    public extern static void CallM<W>(UpdatedClassForPrivateGeneric<V> c, V v, W w);
 }
 
-static void CallPrivateMethod(Class c)
+internal class UnsafeAccessorExample
 {
-    PrivateMethod(c);
+    public void AccessGenericType(UpdatedClassForPrivateGeneric<int> c)
+    {
+        ref int f = ref Accessors<int>.GetSetPrivateField(c);
 
-    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = nameof(PrivateMethod))]
-    extern static void PrivateMethod(Class c);
+        Accessors<int>.CallM<string>(c, 1, string.Empty);
+    }
 }
-static void GetSetStaticPrivateField()
-{
-    ref int f = ref GetSetStaticPrivateField(null);
-
-    [UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "StaticPrivateField")]
-    extern static ref int GetSetStaticPrivateField(Class c);
-}
-
