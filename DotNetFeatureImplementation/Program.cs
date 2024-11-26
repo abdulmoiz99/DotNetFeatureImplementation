@@ -1,21 +1,40 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using DotNetFeatureImplementation;
+using System.Runtime.CompilerServices;
 
-AppContext.SetSwitch("Feature.IsSupported", true);
 
-if (Feature.IsSupported)
+CallStaticPrivateMethod();
+CallPrivateConstructor();
+GetSetStaticPrivateField();
+
+static void CallStaticPrivateMethod()
 {
-    Feature.Implementation();
+    StaticPrivateMethod(null);
+
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = nameof(StaticPrivateMethod))]
+    extern static void StaticPrivateMethod(Class c);
 }
-else Console.WriteLine("Feature is not supported");
-
-
-public static class Feature
+static void CallPrivateConstructor()
 {
-    [FeatureSwitchDefinition("Feature.IsSupported")]
-    internal static bool IsSupported => AppContext.TryGetSwitch("Feature.IsSupported", out bool isEnable) ? isEnable : true;
+    Class c1 = PrivateConstructor(1);
+    CallPrivateMethod(c1);
 
-    internal static void Implementation()
-    {
-        Console.WriteLine("Feature is enable and running");
-    }
+
+    [UnsafeAccessor(UnsafeAccessorKind.Constructor)]
+    extern static Class PrivateConstructor(int i);
 }
+
+static void CallPrivateMethod(Class c)
+{
+    PrivateMethod(c);
+
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = nameof(PrivateMethod))]
+    extern static void PrivateMethod(Class c);
+}
+static void GetSetStaticPrivateField()
+{
+    ref int f = ref GetSetStaticPrivateField(null);
+
+    [UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "StaticPrivateField")]
+    extern static ref int GetSetStaticPrivateField(Class c);
+}
+
