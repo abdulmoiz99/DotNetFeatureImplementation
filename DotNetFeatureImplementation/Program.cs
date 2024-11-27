@@ -1,15 +1,40 @@
-﻿// Original data
-using System.Buffers.Text;
-using System.Text;
+﻿
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 
-string originalText = "Hello, Base64Url!";
-byte[] data = Encoding.UTF8.GetBytes(originalText);
+BenchmarkRunner.Run<Benchy>();
 
-// Encoding to Base64Url
-string encoded = Base64Url.EncodeToString(data);
-Console.WriteLine($"Encoded: {encoded}");
 
-// Decoding back to original data
-byte[] decodedData = Base64Url.DecodeFromChars(encoded);
-string decodedText = Encoding.UTF8.GetString(decodedData);
-Console.WriteLine($"Decoded: {decodedText}");
+[MemoryDiagnoser]
+public class Benchy
+{
+    private static readonly string _dataAsText = "11 27 2024";
+
+    [Benchmark]
+    public (int month, int day, int year) DateWithStringAndSubstring()
+    {
+        var monthAsText = _dataAsText.Substring(0, 2);
+        var dayAsText = _dataAsText.Substring(3, 2);
+        var yearAsText = _dataAsText.Substring(6);
+
+        int month = int.Parse(monthAsText);
+        int day = int.Parse(dayAsText);
+        int year = int.Parse(yearAsText);
+
+        return (month, day, year);
+    }
+    [Benchmark]
+    public (int month, int day, int year) DateWithStringAndSpan()
+    {
+        ReadOnlySpan<char> dateAsSpan = _dataAsText;
+        var monthAsText = dateAsSpan.Slice(0, 2);
+        var dayAsText = dateAsSpan.Slice(3, 2);
+        var yearAsText = dateAsSpan.Slice(6);
+
+        int month = int.Parse(monthAsText);
+        int day = int.Parse(dayAsText);
+        int year = int.Parse(yearAsText);
+
+        return (month, day, year);
+    }
+}
