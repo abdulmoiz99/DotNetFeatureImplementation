@@ -1,18 +1,14 @@
-﻿var dictionay = new OrderedDictionary<int, string>();
+﻿var queue = new PriorityQueue<int, int>();
+queue.Enqueue(1, 2);
+queue.Enqueue(2, 3);
+queue.Enqueue(3, 1);
+queue.Enqueue(4, 5);
 
-dictionay.Add(3, "Test3");
-dictionay.Add(1, "Test1");
-dictionay.Add(2, "Test2");
-dictionay.Add(4, "Test4");
 
-foreach(var item in dictionay)
-{
-    Console.WriteLine("{0}--{1}", item.Key, item.Value);
-}
+Console.WriteLine(queue.Remove(1, out int value, out _));
+Console.WriteLine(value);
 
-dictionay.RemoveAt(0);
-
-foreach (var item in dictionay)
-{
-    Console.WriteLine("{0}--{1}", item.Key, item.Value);
-}
+//while (queue.Count > 0)
+//{
+//    Console.WriteLine(queue.Dequeue());
+//}
