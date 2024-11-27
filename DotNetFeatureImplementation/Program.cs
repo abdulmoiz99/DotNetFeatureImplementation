@@ -1,14 +1,5 @@
-﻿var queue = new PriorityQueue<int, int>();
-queue.Enqueue(1, 2);
-queue.Enqueue(2, 3);
-queue.Enqueue(3, 1);
-queue.Enqueue(4, 5);
+﻿TimeSpan timespan1 = TimeSpan.FromSeconds(value: 101.832);
+Console.WriteLine(timespan1); // since the value is in double its it represented wrong // timeSpan1 = 00:01:41.8319999
 
-
-Console.WriteLine(queue.Remove(1, out int value, out _));
-Console.WriteLine(value);
-
-//while (queue.Count > 0)
-//{
-//    Console.WriteLine(queue.Dequeue());
-//}
+TimeSpan timespan2 = TimeSpan.FromSeconds(seconds: 101, milliseconds: 832);
+Console.WriteLine(timespan2); // this one is correct and more precise timeSpan2 = 00:01:41.8320000
